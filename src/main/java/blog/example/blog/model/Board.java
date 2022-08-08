@@ -36,7 +36,7 @@ public class Board {
     @JoinColumn(name="userId")
     private User user;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     private List<Reply> reply;
 
     @CreationTimestamp
