@@ -1,10 +1,9 @@
-package blog.example.blog.Controller;
+package blog.example.blog.controller;
 
 import blog.example.blog.model.RoleType;
 import blog.example.blog.model.User;
 import blog.example.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.function.Supplier;
 
 @RestController
 public class DummyController {
