@@ -6,28 +6,20 @@
 
 <body>
 <div th:replace="/layout/nav :: fragment-nav"></div>
+
 <div class="container">
-    <div class="card m-3">
+    <div class="card m-2" th:each="board : ${boards.content}">
         <div class="card-body">
-            <h4 class="card-title">제목</h4>
-            <a href="#" class="btn btn-primary">상세</a>
-        </div>
-    </div>
-
-    <div class="card m-3">
-        <div class="card-body">
-            <h4 class="card-title">제목</h4>
-            <a href="#" class="btn btn-primary">상세</a>
-        </div>
-    </div>
-
-    <div class="card m-3">
-        <div class="card-body">
-            <h4 class="card-title">제목</h4>
-            <a href="#" class="btn btn-primary">상세</a>
+            <h4 class="card-title" th:text="${board.title}">제목</h4>
+            <h6 class="card-title" th:text="${board.getContent()}">내용</h6>
         </div>
     </div>
 </div>
+
+<ul class="pagination justify-content-center">
+    <li class="page-item"><a class="page-link" href="#">이전</a></li>
+    <li class="page-item"><a class="page-link" href="#">다음</a></li>
+</ul>
 
 <footer th:replace="/layout/footer :: fragment-footer"></footer>
 
