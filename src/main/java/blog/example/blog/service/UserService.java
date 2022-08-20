@@ -8,6 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+
 @Service
 public class UserService {
 
@@ -26,4 +28,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void 회원수정(User user){
+        User persistence = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
+        String rawPassword = user.getPassword();
+        String encPassword = encode.encode(rawPassword);
+        persistence.setPassword(encPassword);
+        persistence.setEmail(user.getEmail());
+    }
 }
