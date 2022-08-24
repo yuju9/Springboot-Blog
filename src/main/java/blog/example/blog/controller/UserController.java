@@ -3,14 +3,22 @@ package blog.example.blog.controller;
 import blog.example.blog.config.auth.PrincipalDetail;
 import blog.example.blog.model.KakaoProfile;
 import blog.example.blog.model.OAuthToken;
+import blog.example.blog.model.User;
+import blog.example.blog.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -19,8 +27,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
 @Controller
 public class UserController {
+
+    @Value("${root.key}")
+    private String rootKey;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @GetMapping("/auth/joinForm")
     public String joinForm() {
@@ -33,7 +51,7 @@ public class UserController {
     }
 
     @GetMapping("/auth/kakao/callback")
-    public @ResponseBody String kakaoCallback(String code){
+    public String kakaoCallback(String code){
 
         RestTemplate rt = new RestTemplate();
 
@@ -86,7 +104,9 @@ public class UserController {
         KakaoProfile kakaoProfile = null;
 
         try {
-            kakaoProfile = objectMapper2.readValue(response.getBody(), KakaoProfile.class);
+            kakaoProfile = objectMapper2.readValue(response2.getBody(), KakaoProfile.class);
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -94,7 +114,29 @@ public class UserController {
         System.out.println("카카오 아이디:" + kakaoProfile.getId());
         System.out.println("카카오 이메일:" + kakaoProfile.getKakao_account().getEmail());
 
-        return response2.getBody();
+        System.out.println("블로그서버 유저네임:" + kakaoProfile.getKakao_account().getEmail() + "_" + kakaoProfile.getId());
+        System.out.println("블로그서버 이메일" + kakaoProfile.getKakao_account().getEmail());
+        System.out.println("블로그서버 패스워드:" + rootKey);
+
+        User kakaoUser = User.builder()
+                .username(kakaoProfile.getKakao_account().getEmail())
+                .password(rootKey)
+                .email(kakaoProfile.getKakao_account().getEmail())
+                .oauth("kakao")
+                .build();
+
+        User originUser = userService.회원찾기(kakaoUser.getUsername());
+
+        if (originUser.getUsername() == null) {
+            System.out.println("기존 회원이 아닙니다.");
+            userService.회원가입(kakaoUser);
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(kakaoUser.getUsername(), rootKey));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "redirect:/";
     }
 
     @GetMapping("/user/updateForm")

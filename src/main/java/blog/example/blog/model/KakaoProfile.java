@@ -7,18 +7,18 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class KakaoProfile {
 
-    public Integer id;
+    public Long id;
     public String connected_at;
-    //public Properties properties;
+    public Properties properties;
     public KakaoAccount kakao_account;
 
-//    @Data
-//    @JsonIgnoreProperties(ignoreUnknown=true)
-//    public class Properties {
-//
-//        public String nickname;
-//
-//    }
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    public class Properties {
+
+        public String nickname;
+
+    }
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown=true)

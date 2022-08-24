@@ -23,6 +23,12 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder encode;
 
+    @Transactional(readOnly = true)
+    public User 회원찾기(String username){
+        User user = userRepository.findByUsername(username)
+                .orElseGet(()-> new User());
+        return user;
+    }
 
 
     @Transactional
@@ -36,11 +42,13 @@ public class UserService {
 
     @Transactional
     public void 회원수정(User user){
-        User persistence = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
-        String rawPassword = user.getPassword();
-        String encPassword = encode.encode(rawPassword);
-        persistence.setPassword(encPassword);
-        persistence.setEmail(user.getEmail());
+        User persistence = userRepository.findById(Math.toIntExact(user.getId())).orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
+        if( persistence.getOauth() == null || persistence.getOauth().equals("")) {
+            String rawPassword = user.getPassword();
+            String encPassword = encode.encode(rawPassword);
+            persistence.setPassword(encPassword);
+            persistence.setEmail(user.getEmail());
+        }
 
 
     }
