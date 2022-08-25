@@ -3,6 +3,7 @@ package blog.example.blog.controller.api;
 import blog.example.blog.config.auth.PrincipalDetail;
 import blog.example.blog.dto.ResponseDto;
 import blog.example.blog.model.Board;
+import blog.example.blog.model.Reply;
 import blog.example.blog.model.User;
 import blog.example.blog.service.BoardService;
 import blog.example.blog.service.UserService;
@@ -32,6 +33,13 @@ public class BoardApiController {
     @PutMapping("/api/board/{id}")
     public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Board board) {
         boardService.글수정하기(id, board);
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    }
+
+    @PostMapping("/api/board/{boardId}/reply")
+    public ResponseDto<Integer> replySave(@PathVariable int boardId, @RequestBody Reply reply, @AuthenticationPrincipal PrincipalDetail principal) {
+
+        boardService.댓글쓰기(principal.getUser(), boardId, reply);
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
 

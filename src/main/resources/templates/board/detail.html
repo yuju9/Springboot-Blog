@@ -23,7 +23,35 @@
     </div>
     <hr/>
     <div class="form-group">
-        <h5 th:text="${board.content}"></h5>
+        <div th:utext="${board.content}"></div>
+    </div>
+    <hr>
+
+    <div class = "card">
+        <form>
+            <input type="hidden" id="boardId" value="${board.id}">
+            <div class="card-body">
+                <textarea id = "reply-content" class = "form-control" rows = "1"></textarea>
+            </div>
+            <div class = "card-footer">
+                <button type = "button" id = "btn-reply-save" class = "btn btn-primary">입력</button>
+            </div>
+        </form>
+    </div>
+    <br />
+    <div class = "card">
+        <div class = "card-header">댓글 리스트</div>
+        <ul th:each="reply : ${board.replys}" id="reply-box" class="list-group">
+            <li th:id="|reply-${reply.id}|" class="list-group-item">
+            <li class="list-group-item">
+                <div class = "d-flex ">
+                    <div th:text="|작성자 : ${reply.user.username} &nbsp|">작성자: yuju &nbsp;</div>
+                    <button class = "badge">삭제</button>
+                </div>
+
+                <div th:text="${reply.content}">댓글 내용</div>
+            </li>
+        </ul>
     </div>
 </div>
 
