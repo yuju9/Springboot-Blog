@@ -26,7 +26,6 @@ let index = {
         }
 
         $.ajax({
-            // 회원가입 수행 요청
             type: "POST",
             url: "/api/board",
             data: JSON.stringify(data),
@@ -67,7 +66,6 @@ let index = {
         }
 
         $.ajax({
-            // 회원가입 수행 요청
             type: "PUT",
             url: "/api/board/" + id,
             data: JSON.stringify(data),
@@ -86,19 +84,33 @@ let index = {
 
     replySave: function () {
         let data = {
-            content: $("#reply-content").val()
+            content: $("#reply-content").val(),
         };
+
         let boardId = $("#boardId").val();
 
         $.ajax({
-            // 회원가입 수행 요청
             type: "POST",
             url: `/api/board/${boardId}/reply`,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
-        }).done(function (resp) {
+        }).done(function (res) {
             alert("댓글 작성이 완료되었습니다.");
+            location.href = `/board/${boardId}`;
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+
+    },
+
+    replyDelete: function (boardId, replyId) {
+        $.ajax({
+            type: "DELETE",
+            url: `/api/board/${boardId}/reply/${replyId}`,
+            dataType: "json"
+        }).done(function (res) {
+            alert("댓글 삭제를 완료되었습니다.");
             location.href = `/board/${boardId}`;
         }).fail(function (error) {
             alert(JSON.stringify(error));

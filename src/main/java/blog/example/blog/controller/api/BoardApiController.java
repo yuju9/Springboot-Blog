@@ -1,6 +1,7 @@
 package blog.example.blog.controller.api;
 
 import blog.example.blog.config.auth.PrincipalDetail;
+import blog.example.blog.dto.ReplySaveRequestDto;
 import blog.example.blog.dto.ResponseDto;
 import blog.example.blog.model.Board;
 import blog.example.blog.model.Reply;
@@ -37,9 +38,15 @@ public class BoardApiController {
     }
 
     @PostMapping("/api/board/{boardId}/reply")
-    public ResponseDto<Integer> replySave(@PathVariable int boardId, @RequestBody Reply reply, @AuthenticationPrincipal PrincipalDetail principal) {
+    public ResponseDto<Integer> replySave(@PathVariable("boardId") Integer boardId, @RequestBody Reply reply, @AuthenticationPrincipal PrincipalDetail principalDetail) {
 
-        boardService.댓글쓰기(principal.getUser(), boardId, reply);
+        boardService.댓글쓰기(principalDetail.getUser(), boardId, reply);
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    }
+
+    @DeleteMapping("/api/board/{boardId}/reply/{replyId}")
+    public ResponseDto<Integer> replyDelete(@PathVariable int replyId){
+        boardService.댓글삭제(replyId);
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
 

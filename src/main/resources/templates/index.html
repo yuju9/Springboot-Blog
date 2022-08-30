@@ -17,10 +17,31 @@
     </div>
 </div>
 
-<ul class="pagination justify-content-center">
-    <li class="page-item"><a class="page-link" href="#">이전</a></li>
-    <li class="page-item"><a class="page-link" href="#">다음</a></li>
-</ul>
+<div th:if="!${boards.last} and !${boards.first}">
+    <ul class="pagination justify-content-center">
+        <li class = "page-item"><a class = "page-link" th:href="@{|?page=${boards.getNumber()-1}|}">◁</a></li>
+        <li class = "page-item"><a class = "page-link" th:href="@{|?page=${boards.getNumber()+1}|}">▷</a></li>
+    </ul>
+</div>
+<div th:unless="!${boards.last} and !${boards.first}">
+    <!-- 처음인 경우 -->
+    <div th:if="${boards.first}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled"><a class="page-link" th:href="@{|?page=${boards.getNumber()-1}|}">◁</a></li>
+            <li class="page-item"><a class="page-link" th:href="@{|?page=${boards.getNumber()+1}|}">▷</a></li>
+        </ul>
+    </div>
+
+    <!-- 끝인 경우 -->
+    <div th:unless="${boards.first}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" th:href="@{|?page=${boards.getNumber()-1}|}">◁</a></li>
+            <li class="page-item disabled"><a class="page-link" th:href="@{|?page=${boards.getNumber()+1}|}">▷</a>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>
 
 <footer th:replace="/layout/footer :: fragment-footer"></footer>
 

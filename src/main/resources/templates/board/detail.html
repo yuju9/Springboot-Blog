@@ -29,12 +29,12 @@
 
     <div class = "card">
         <form>
-            <input type="hidden" id="boardId" value="${board.id}">
+            <input type="hidden" id="boardId" th:value="${board.id}">
             <div class="card-body">
                 <textarea id = "reply-content" class = "form-control" rows = "1"></textarea>
             </div>
             <div class = "card-footer">
-                <button type = "button" id = "btn-reply-save" class = "btn btn-primary">입력</button>
+                <button type="button" id="btn-reply-save" class="btn btn-primary">입력</button>
             </div>
         </form>
     </div>
@@ -46,7 +46,7 @@
             <li class="list-group-item">
                 <div class = "d-flex ">
                     <div th:text="|작성자 : ${reply.user.username} &nbsp|">작성자: yuju &nbsp;</div>
-                    <button class = "badge">삭제</button>
+                    <button th:onclick="|javascript:index.replyDelete(${board.id}, ${reply.id})|" class="badge">삭제</button>
                 </div>
 
                 <div th:text="${reply.content}">댓글 내용</div>

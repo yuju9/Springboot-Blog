@@ -1,5 +1,6 @@
 package blog.example.blog.service;
 
+import blog.example.blog.dto.ReplySaveRequestDto;
 import blog.example.blog.model.Board;
 import blog.example.blog.model.Reply;
 import blog.example.blog.model.RoleType;
@@ -23,6 +24,9 @@ public class BoardService {
 
     @Autowired
     private ReplyRepository replyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional
     public void 글쓰기(Board board, User user) {
@@ -57,12 +61,18 @@ public class BoardService {
     }
 
     @Transactional
-    public void 댓글쓰기(User user, int boardId, Reply requestReply){
+    public void 댓글쓰기(User user, int boardId, Reply requestReply) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글 작성 실패"));
+                .orElseThrow(() -> new IllegalArgumentException("댓글 쓰기 실패 : 게시글 ID를 찾을 수 없습니다."));
         requestReply.setUser(user);
         requestReply.setBoard(board);
 
         replyRepository.save(requestReply);
+    }
+
+    @Transactional
+    public void 댓글삭제(int replyId){
+        replyRepository.deleteById(replyId);
+
     }
 }
